@@ -1,0 +1,72 @@
+<html>
+    <head>
+        {% include 'header.html' %}
+    </head>
+
+    <body>
+        <!-- navbar -->
+        {% include 'navbar.html' %}
+
+        <!-- main content-->
+        <div class="p-5 container">
+            {% if resultCity != "none" %}
+                <h1 class="display-2">{{ destPlace }}</h1>
+            {% else %}
+                <h1 class="display-2"><span class="display-4">We Reccommend: </span>{{ destPlace }}</h1>
+            {% endif %}
+            <br>
+            <p>{{ destPlaceDesc }}</p>
+            <a href={{ destPlaceUrl }}>More information</a>
+            <br>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">{{ placeName }}, {{ stateName }}</th>
+                  <th scope="col">{{ destPlace }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in range(0,colsets|length) %}
+                    <tr>
+                      <th scope="row">{{ colnames[i] }}</th>
+                      <td>{{ originalStats[i] }}</td>
+                      <td>{{ destinationStats[i] }}</td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <br>
+            {% if destPlaceIsAscend %}
+            <h3 class="display-3">Congratulations!</h3>
+            <p>You may qualify for the West Virginia Ascend program! Benefits include $12,000 in cash and a year of free outdoor recreation. For more details check <a href="https://ascendwv.com">WV Ascend webite</a>.</p>
+            {% endif %}
+            <br>
+            <br>
+            {% if resultCity == "none" %}
+                <h5 class="display-5">Here are some other options</h5><br />
+                <div class="row">
+                {% for city in recCities %}
+                    <div class="col">
+                    <button class="btn btn-primary btn-large btn-city">{{ city }}</button>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+            <form class="needs-validation" id="submitCensusQuery" action="{{ url_for('results') }}" method="POST" style="display:none">
+                <input type="hidden" value="{{ stateName }}" name="stateName" id="stateName"/>
+                <input type="hidden" value="{{ placeName }}" name="placeName" id="placeName"/>
+                <input type="hidden" value="{{ stateid }}" name="states" id="states"/>
+                <input type="hidden" value="{{ placeid }}" name="places" id="places"/>
+                <input type="hidden" value="" name="city" id="city"/>
+            </form>
+        </div>
+        <script>
+            $('button.btn-city').click( function(){
+                $('#city').val($(this).html());
+                $('#submitCensusQuery').submit();
+            });
+        </script>
+        {% include 'footer.html' %}
+    </body>
+</html>
